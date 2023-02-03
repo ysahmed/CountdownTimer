@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".view.fragment.HomeFragment">
+
+
+    <com.shawnlin.numberpicker.NumberPicker
+        android:id="@+id/hour_picker"
+        style="@style/number_picker_style"
+        android:contentDescription="Hour"
+        app:layout_constraintEnd_toStartOf="@+id/textView"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintHorizontal_chainStyle="packed"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:np_max="24"
+        app:np_value="0" />
+
+    <TextView
+        android:id="@+id/textView"
+        style="@style/separator_style"
+        android:text=":"
+        app:layout_constraintBottom_toBottomOf="@+id/hour_picker"
+        app:layout_constraintEnd_toStartOf="@+id/minute_picker"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/hour_picker"
+        app:layout_constraintTop_toTopOf="@+id/hour_picker" />
+
+    <com.shawnlin.numberpicker.NumberPicker
+        android:id="@+id/minute_picker"
+        style="@style/number_picker_style"
+        android:contentDescription="Minute"
+        app:layout_constraintEnd_toStartOf="@+id/textView2"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/textView"
+        app:layout_constraintTop_toTopOf="parent"
+        app:np_max="59"
+        app:np_value="0" />
+
+    <TextView
+        android:id="@+id/textView2"
+        style="@style/separator_style"
+        android:text=":"
+        app:layout_constraintBottom_toBottomOf="@+id/second_picker"
+        app:layout_constraintEnd_toStartOf="@+id/second_picker"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/minute_picker"
+        app:layout_constraintTop_toTopOf="@+id/second_picker" />
+
+
+    <com.shawnlin.numberpicker.NumberPicker
+        android:id="@+id/second_picker"
+        style="@style/number_picker_style"
+        android:contentDescription="Second"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/textView2"
+        app:layout_constraintTop_toTopOf="parent"
+        app:np_max="59"
+        app:np_value="6" />
+
+    <TextView
+        android:id="@+id/tv_timer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
+        android:text="Presets"
+        android:textColor="?attr/colorPrimaryVariant"
+        android:textSize="@dimen/small_btn_text_size"
+        app:layout_constraintBottom_toBottomOf="@+id/tv_add"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/tv_add"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <TextView
+        android:id="@+id/tv_add"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="32dp"
+        android:text="@string/tv_btn_add_text"
+        android:textSize="@dimen/small_btn_text_size"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/minute_picker" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_presets"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_margin="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_add"
+        tools:listitem="@layout/preset_item" />
+
+    <ImageView
+        android:id="@+id/iv_start"
+        style="@style/bottom_action_button_style"
+        android:contentDescription="Start timer"
+        android:src="@drawable/btn_play"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

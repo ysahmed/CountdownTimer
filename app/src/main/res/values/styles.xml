@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="style_circular_progressbar">
+        <item name="android:layout_width">400dp</item>
+        <item name="android:layout_height">400dp</item>
+        <item name="android:indeterminateOnly">false</item>
+        <item name="android:progressDrawable">@drawable/circular_progressbar</item>
+    </style>
+
+    <style name="number_picker_style">
+        <item name="android:layout_width">80dp</item>
+        <item name="android:layout_height">250dp</item>
+
+        <item name="np_min">0</item>
+        <item name="np_textColor">?attr/colorOnPrimary</item>
+        <item name="np_selectedTextColor">?attr/colorOnPrimary</item>
+        <item name="np_textSize">50sp</item>
+        <item name="np_selectedTextSize">50sp</item>
+
+        <item name="np_dividerThickness">0dp</item>
+        <item name="np_dividerLength">0dp</item>
+        <item name="np_accessibilityDescriptionEnabled">false</item>
+        <item name="np_fadingEdgeEnabled">true</item>
+        <item name="np_fadingEdgeStrength">1.0</item>
+        <item name="np_formatter">%02d</item>
+
+
+        <item name="android:layout_marginTop">24dp</item>
+
+    </style>
+
+    <style name="cardView_style">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_margin">8dp</item>
+    </style>
+
+    <style name="separator_style">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textSize">45sp</item>
+        <item name="android:paddingBottom">8dp</item>
+        <item name="android:gravity">center_vertical</item>
+    </style>
+
+    <style name="bottom_action_button_style">
+        <item name="android:layout_width">70dp</item>
+        <item name="android:layout_height">70dp</item>
+        <item name="android:layout_marginBottom">36dp</item>
+    </style>
+
+
+</resources>
