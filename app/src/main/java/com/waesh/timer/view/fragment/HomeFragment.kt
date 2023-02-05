@@ -33,13 +33,9 @@ class HomeFragment : Fragment() {
     }
 
     private val adapter = PresetAdapter(object : AdapterItemClickListener {
-        override fun setPicker(duration: Long) {
+        override fun setPickerFromPreset(duration: Long) {
             Log.i("kkkCat", "setPicker: $duration")
-            binding.apply {
-                hourPicker.value = ((duration / (1000 * 3600)) % 24).toInt()
-                minutePicker.value = ((duration / (1000 * 60)) % 60).toInt()
-                secondPicker.value = ((duration / 1000) % 60).toInt()
-            }
+            this@HomeFragment.setPicker(duration)
         }
     })
 
@@ -56,7 +52,7 @@ class HomeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setPicker()
+        setPicker(sharedPreferences.getLong(PrefKey.PICKER_STATE_MILLIS, 5000))
 
         val recyclerView = binding.rvPresets
         recyclerView.layoutManager = LinearLayoutManager(requireActivity())
@@ -80,7 +76,7 @@ class HomeFragment : Fragment() {
                 delay(50)
 
                 findNavController().navigate(
-                    HomeFragmentDirections.actionHomeFragmentToTimerFragment(getTimeMillis())
+                    HomeFragmentDirections.actionHomeFragmentToTimerFragment(getTimeMillisFromPickers())
                 )
             }
         }
@@ -88,19 +84,18 @@ class HomeFragment : Fragment() {
 
     override fun onDestroy() {
         super.onDestroy()
-        sharedPreferences.edit().putLong(PrefKey.PICKER_STATE_MILLIS, getTimeMillis()).apply()
+        sharedPreferences.edit().putLong(PrefKey.PICKER_STATE_MILLIS, getTimeMillisFromPickers()).apply()
     }
 
-    private fun getTimeMillis(): Long {
+    private fun getTimeMillisFromPickers(): Long {
         return (binding.hourPicker.value.toLong() * 3600 +
                 binding.minutePicker.value.toLong() * 60 +
                 binding.secondPicker.value.toLong()) * 1000
     }
 
-    private fun setPicker() {
-        val millisInFuture = sharedPreferences.getLong(PrefKey.PICKER_STATE_MILLIS, 5000)
-        binding.hourPicker.value = ((millisInFuture / (1000 * 3600)) % 24).toInt()
-        binding.minutePicker.value = ((millisInFuture / (1000 * 60)) % 60).toInt()
-        binding.secondPicker.value = ((millisInFuture / 1000) % 60).toInt()
+    private fun setPicker(millis: Long) {
+        binding.hourPicker.value = ((millis / (1000 * 3600)) % 24).toInt()
+        binding.minutePicker.value = ((millis / (1000 * 60)) % 60).toInt()
+        binding.secondPicker.value = ((millis / 1000) % 60).toInt()
     }
 }

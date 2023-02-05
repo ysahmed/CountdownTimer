@@ -39,11 +39,11 @@ class PresetAdapter(private val itemClickListener: AdapterItemClickListener): Li
         holder.tvPresetName.text = currentItem.name
         holder.tvTime.text = UtilMethods.getFormattedDuration(currentItem.duration)
         holder.item.setOnClickListener {
-            itemClickListener.setPicker(currentItem.duration)
+            itemClickListener.setPickerFromPreset(currentItem.duration)
         }
     }
 }
 
 interface AdapterItemClickListener{
-    fun setPicker(duration: Long)
+    fun setPickerFromPreset(duration: Long)
 }
