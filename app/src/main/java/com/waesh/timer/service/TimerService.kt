@@ -8,22 +8,21 @@ import android.content.IntentFilter
 import android.media.AudioAttributes
 import android.media.MediaPlayer
 import android.media.RingtoneManager
-import android.net.Uri
 import android.os.Binder
 import android.os.CountDownTimer
 import android.os.IBinder
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.waesh.timer.util.UtilMethods
 
-@Suppress("WakelockTimeout")
 class TimerService : Service() {
 
     private var countDownTimer: CountDownTimer? = null
     private var millisInFuture = 0L
     private lateinit var duration: String
     private var isTimerRunning = false
-    val isTimerActive: Boolean get() = isTimerRunning
+    //val isTimerActive: Boolean get() = isTimerRunning
 
     private var _isTimerStopped = MutableLiveData<Boolean>()
     val isTimerStopped: LiveData<Boolean> get() = _isTimerStopped
@@ -41,7 +40,6 @@ class TimerService : Service() {
     private var timerFinishedAlarmReceiver: BroadcastReceiver? = null
 
     private val notificationModule = NotificationModule(this)
-    //private lateinit var partialWakeLock: WakeLock
 
     private lateinit var alarmPendingIntent: PendingIntent
 
@@ -97,10 +95,6 @@ class TimerService : Service() {
             timerFinishedAlarmReceiver,
             IntentFilter(ACTION_ALARM)
         )
-
-/*
-        partialWakeLock = (getSystemService(Context.POWER_SERVICE) as PowerManager)
-            .newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, packageName)*/
     }
 
     override fun onBind(intent: Intent): IBinder {
@@ -111,12 +105,12 @@ class TimerService : Service() {
     override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
         if (intent.hasExtra(MILLIS_IN_FUTURE)) {
             millisInFuture = intent.getLongExtra(MILLIS_IN_FUTURE, 0L)
-            duration = getFormattedDuration()
+            duration = UtilMethods.getFormattedDuration(millisInFuture)
             _formattedTimeInFuture.postValue(duration)
             Log.i(TAG, "onBind: millisInFuture = $millisInFuture")
         }
         startForeground(
-            TIMER_NOTIFICATION_ID,
+            TIMER_COUNTDOWN_NOTIFICATION_ID,
             notificationModule.getNotificationBase(running = true, complete = false)
                 .setContentText(duration)
                 .build()
@@ -128,10 +122,6 @@ class TimerService : Service() {
     fun startTimer() {
         _isTimerStopped.postValue(false)
         isTimerRunning = true
-
-        //Log.i(TAG, "startTimer: called")
-
-        //partialWakeLock.acquire()
 
         // set alarm
         (getSystemService(ALARM_SERVICE) as AlarmManager).setExactAndAllowWhileIdle(
@@ -151,7 +141,7 @@ class TimerService : Service() {
                 if (oneSecond >= 999) {
                     oneSecond = 0L
                     //Log.i(TAG, "onTick: Tick... $millisInFuture ")
-                    _formattedTimeInFuture.postValue(getFormattedDuration())
+                    _formattedTimeInFuture.postValue(UtilMethods.getFormattedDuration(millisInFuture))
                     notificationModule.getNotificationBase(running = true, complete = false)
                         .setContentText(_formattedTimeInFuture.value)
                         .build()
@@ -162,14 +152,6 @@ class TimerService : Service() {
             override fun onFinish() {
                 isTimerRunning = false
                 _isTimerStopped.postValue(true)
-                // stopForeground(STOP_FOREGROUND_REMOVE)
-                /*makeNoise()
-                notificationModule.getNotificationBase(running = null, complete = true)
-                    .setContentText("Timer ended $duration")
-                    .setChannelId(NotificationModule.ALARM_NOTIFICATION_CHANNEL_ID)
-                    .build()
-                    .notify(TIMER_END_NOTIFICATION_ID)*/
-                //partialWakeLock.release()
             }
         }.start()
     }
@@ -185,7 +167,6 @@ class TimerService : Service() {
             .build()
             .notify()
         isTimerPaused.postValue(true)
-        //partialWakeLock.release()
     }
 
     fun resumeTimer() {
@@ -204,13 +185,10 @@ class TimerService : Service() {
             alarmPendingIntent
         )
 
-        //partialWakeLock.release()
-
         disMiss()
     }
 
     private fun disMiss() {
-        //partialWakeLock.release()
         (getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager)
             .cancel(
                 TIMER_END_NOTIFICATION_ID
@@ -224,19 +202,11 @@ class TimerService : Service() {
         stopSelf()
     }
 
-
-    private fun getFormattedDuration(): String {
-        val hour = (millisInFuture / (1000 * 60 * 60)) % 24
-        val minute = (millisInFuture / (1000 * 60)) % 60
-        val second = (millisInFuture / 1000) % 60
-
-        return String.format("%02d:%02d:%02d", hour, minute, second)
-    }
-
     private fun makeNoise() {
-        val sound: Uri =
+        val sound =
             RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM)
         mediaPlayer = MediaPlayer()
+        Log.i(TAG, "makeNoise: $sound")
 
         try {
             mediaPlayer!!.apply {
@@ -255,7 +225,7 @@ class TimerService : Service() {
         }
     }
 
-    private fun Notification.notify(id: Int = TIMER_NOTIFICATION_ID) {
+    private fun Notification.notify(id: Int = TIMER_COUNTDOWN_NOTIFICATION_ID) {
         (getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager)
             .notify(id, this)
     }
@@ -271,7 +241,6 @@ class TimerService : Service() {
         Log.i(TAG, "onDestroy: Called")
     }
 
-
     companion object {
         const val TAG = "TIMER_SERVICE"
         const val MILLIS_IN_FUTURE = "MILLIS_IN_FUTURE"
@@ -282,7 +251,7 @@ class TimerService : Service() {
         const val ACTION_TIMER_STOP = "com.waesh.timer.ACTION_STOP_TIMER"
         const val ACTION_TIMER_RESUME = "com.waesh.timer.ACTION_RESUME_TIMER"
         const val ACTION_SERVICE_DISMISS = "com.waesh.timer.DISMISS_SERVICE"
-        const val TIMER_NOTIFICATION_ID = 224687
+        const val TIMER_COUNTDOWN_NOTIFICATION_ID = 224687
         const val TIMER_END_NOTIFICATION_ID = 854764
     }
 }

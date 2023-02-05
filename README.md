@@ -2,9 +2,9 @@ About
 ---
 Just a simple countdown timer app. __\[WORK IN PROGRESS\]__
 
-This is my own project built by following MVVM architecture.  
-The purpose of this project experiment with the following Android and Jetpack components:  
-  
+This project is built by following MVVM architecture.  
+The purpose of this project experiment with the following Android and Jetpack components:
+
 - Service
 - AlarmManager
 - BroadcastReceiver

@@ -67,8 +67,6 @@ class TimerFragment : Fragment() {
             timerService.stopTimer()
         }
 
-        // if service is not running start it first
-        // while starting also send the set duration
         if (!(activity as MainActivity).isTimerServiceRunning(TimerService::class.java)) {
             requireActivity().startForegroundService(
                 Intent(requireActivity(), TimerService::class.java).apply {
@@ -83,11 +81,7 @@ class TimerFragment : Fragment() {
                 it, serviceConnection, Context.BIND_AUTO_CREATE
             )
         }
-    }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        //requireActivity().unbindService(serviceConnection)
     }
 
     private fun initiateObservers() {

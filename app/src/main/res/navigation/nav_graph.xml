@@ -28,7 +28,8 @@
             app:destination="@id/homeFragment"
             app:enterAnim="@anim/slide_in_from_left"
             app:exitAnim="@anim/slide_out_to_right"
-            app:popUpToInclusive="false" />
+            app:popUpTo="@id/nav_graph"
+            app:popUpToInclusive="true" />
         <argument
             android:name="timeInMillis"
             app:argType="long"
