@@ -21,10 +21,11 @@ TODO
 - [x] ~~TimerService~~
 - [x] ~~Alarm~~
 - [x] ~~Notifications~~
-- [ ] Custom progressbar
+- [x] ~~Custom progressbar~~
+- [ ] API 33 support
 - [ ] Saving presets
 - [ ] Creating string resources
-
+- [ ] Code Cleanup 
 Special thanks
 ---
 [ShawnLin013](https://github.com/ShawnLin013) for the customizable NumberPicker. 

@@ -6,7 +6,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.media.AudioAttributes
-import android.media.MediaPlayer
+import android.media.Ringtone
 import android.media.RingtoneManager
 import android.os.Binder
 import android.os.CountDownTimer
@@ -19,7 +19,17 @@ import com.waesh.timer.util.UtilMethods
 class TimerService : Service() {
 
     private var countDownTimer: CountDownTimer? = null
+
+    private val _millis = MutableLiveData<Long>()
+    val millis: LiveData<Long>
+    get() = _millis
+
     private var millisInFuture = 0L
+    set(value) {
+        _millis.postValue(value)
+        field = value
+    }
+
     private lateinit var duration: String
     private var isTimerRunning = false
     //val isTimerActive: Boolean get() = isTimerRunning
@@ -43,7 +53,8 @@ class TimerService : Service() {
 
     private lateinit var alarmPendingIntent: PendingIntent
 
-    private var mediaPlayer: MediaPlayer? = null
+    //private var mediaPlayer: MediaPlayer? = null
+    private lateinit var ringtone: Ringtone
 
     inner class TimerServiceBinder : Binder() {
         fun getTimerService(): TimerService = this@TimerService
@@ -51,10 +62,17 @@ class TimerService : Service() {
 
     override fun onCreate() {
         super.onCreate()
+        ringtone = RingtoneManager.getRingtone(this, RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM))
+        ringtone.audioAttributes = AudioAttributes.Builder()
+            .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
+            .setUsage(AudioAttributes.USAGE_ALARM)
+            .build()
+        
         notificationActionReceiver = object : BroadcastReceiver() {
             override fun onReceive(context: Context?, intent: Intent?) {
                 if (intent?.hasExtra(BROADCAST_INTENT_STRING_EXTRA) == true) {
                     when (intent.getStringExtra(BROADCAST_INTENT_STRING_EXTRA)) {
+                        ACTION_TIMER_START -> startTimer()
                         ACTION_TIMER_PAUSE -> pauseTimer()
                         ACTION_TIMER_STOP -> stopTimer()
                         ACTION_TIMER_RESUME -> resumeTimer()
@@ -81,7 +99,8 @@ class TimerService : Service() {
 
         timerFinishedAlarmReceiver = object : BroadcastReceiver() {
             override fun onReceive(context: Context?, intent: Intent?) {
-                makeNoise()
+                //makeNoise()
+                ringtone.play()
                 notificationModule.getNotificationBase(running = null, complete = true)
                     .setContentText("Timer ended $duration")
                     .setChannelId(NotificationModule.ALARM_NOTIFICATION_CHANNEL_ID)
@@ -119,7 +138,7 @@ class TimerService : Service() {
         return START_NOT_STICKY
     }
 
-    fun startTimer() {
+    private fun startTimer() {
         _isTimerStopped.postValue(false)
         isTimerRunning = true
 
@@ -140,7 +159,6 @@ class TimerService : Service() {
                 oneSecond += 50
                 if (oneSecond >= 999) {
                     oneSecond = 0L
-                    //Log.i(TAG, "onTick: Tick... $millisInFuture ")
                     _formattedTimeInFuture.postValue(UtilMethods.getFormattedDuration(millisInFuture))
                     notificationModule.getNotificationBase(running = true, complete = false)
                         .setContentText(_formattedTimeInFuture.value)
@@ -156,7 +174,7 @@ class TimerService : Service() {
         }.start()
     }
 
-    fun pauseTimer() {
+    private fun pauseTimer() {
         countDownTimer?.cancel()
         // cancel alarm
         (getSystemService(ALARM_SERVICE) as AlarmManager).cancel(
@@ -169,12 +187,12 @@ class TimerService : Service() {
         isTimerPaused.postValue(true)
     }
 
-    fun resumeTimer() {
+    private fun resumeTimer() {
         startTimer()
         isTimerPaused.postValue(false)
     }
 
-    fun stopTimer() {
+    private fun stopTimer() {
         _isTimerStopped.postValue(true)
         countDownTimer?.cancel()
         isTimerPaused.postValue(false)
@@ -194,17 +212,18 @@ class TimerService : Service() {
                 TIMER_END_NOTIFICATION_ID
             )
         stopForeground(STOP_FOREGROUND_REMOVE)
-        mediaPlayer?.apply {
+/*        mediaPlayer?.apply {
             stop()
             reset()
             release()
-        }
+        }*/
+        ringtone.stop()
         stopSelf()
     }
 
-    private fun makeNoise() {
-        val sound =
-            RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM)
+/*    private fun makeNoise() {
+        val sound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM)
+
         mediaPlayer = MediaPlayer()
         Log.i(TAG, "makeNoise: $sound")
 
@@ -223,7 +242,7 @@ class TimerService : Service() {
         } catch (e: java.lang.Exception) {
             e.printStackTrace()
         }
-    }
+    }*/
 
     private fun Notification.notify(id: Int = TIMER_COUNTDOWN_NOTIFICATION_ID) {
         (getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager)
@@ -237,7 +256,7 @@ class TimerService : Service() {
         notificationActionReceiver = null
         timerFinishedAlarmReceiver = null
         countDownTimer = null
-        mediaPlayer = null
+        //mediaPlayer = null
         Log.i(TAG, "onDestroy: Called")
     }
 
@@ -247,9 +266,12 @@ class TimerService : Service() {
         const val ACTION_NOTIFICATION_BUTTON = "com.waesh.timer.NOTIFICATION_ACTION"
         const val ACTION_ALARM = "com.waesh.timer.ACTION_ALARM"
         const val BROADCAST_INTENT_STRING_EXTRA = "BROADCAST_INTENT_STRING_EXTRA"
+
+        const val ACTION_TIMER_START = "com.waesh.timer.ACTION_START_TIMER"
         const val ACTION_TIMER_PAUSE = "com.waesh.timer.ACTION_PAUSE_TIMER"
         const val ACTION_TIMER_STOP = "com.waesh.timer.ACTION_STOP_TIMER"
         const val ACTION_TIMER_RESUME = "com.waesh.timer.ACTION_RESUME_TIMER"
+
         const val ACTION_SERVICE_DISMISS = "com.waesh.timer.DISMISS_SERVICE"
         const val TIMER_COUNTDOWN_NOTIFICATION_ID = 224687
         const val TIMER_END_NOTIFICATION_ID = 854764

@@ -17,7 +17,6 @@ import androidx.navigation.fragment.navArgs
 import com.waesh.timer.R
 import com.waesh.timer.databinding.FragmentTimerBinding
 import com.waesh.timer.service.TimerService
-import com.waesh.timer.view.activity.MainActivity
 
 
 class TimerFragment : Fragment() {
@@ -33,7 +32,15 @@ class TimerFragment : Fragment() {
         override fun onServiceConnected(service: ComponentName?, serviceBinder: IBinder?) {
             Log.i(TAG, "onServiceConnected: Bound!")
             timerService = (serviceBinder as TimerService.TimerServiceBinder).getTimerService()
-            timerService.startTimer()
+            //timerService.startTimer()
+            requireActivity().sendBroadcast(
+                Intent(TimerService.ACTION_NOTIFICATION_BUTTON).apply {
+                    putExtra(
+                        TimerService.BROADCAST_INTENT_STRING_EXTRA,
+                        TimerService.ACTION_TIMER_START
+                    )
+                }
+            )
             initiateObservers()
         }
 
@@ -54,31 +61,52 @@ class TimerFragment : Fragment() {
 
         val args: TimerFragmentArgs by navArgs()
         Log.i(TAG, "onViewCreated: ${args.timeInMillis}")
+        binding.progressBar.max = args.timeInMillis.toInt()
 
-
-        binding.ivBtnPauseResume.setOnClickListener {
-            if (timerService.ifTimerIsPaused.value!!)
-                timerService.resumeTimer()
-            else
-                timerService.pauseTimer()
-        }
-
-        binding.ivBtnReset.setOnClickListener {
-            timerService.stopTimer()
-        }
-
-        if (!(activity as MainActivity).isTimerServiceRunning(TimerService::class.java)) {
-            requireActivity().startForegroundService(
-                Intent(requireActivity(), TimerService::class.java).apply {
-                    putExtra(TimerService.MILLIS_IN_FUTURE, args.timeInMillis)
-                }
-            )
-        }
+        //if (!(activity as MainActivity).isTimerServiceRunning(TimerService::class.java)) {
+        requireActivity().startForegroundService(
+            Intent(requireActivity(), TimerService::class.java).apply {
+                putExtra(TimerService.MILLIS_IN_FUTURE, args.timeInMillis)
+            }
+        )
+        //}
 
         // then bind to the service anyway
         Intent(requireActivity(), TimerService::class.java).let {
             requireActivity().bindService(
                 it, serviceConnection, Context.BIND_AUTO_CREATE
+            )
+        }
+
+        binding.ivBtnPauseResume.setOnClickListener {
+            if (timerService.ifTimerIsPaused.value!!)
+                requireActivity().sendBroadcast(
+                    Intent(TimerService.ACTION_NOTIFICATION_BUTTON).apply {
+                        putExtra(
+                            TimerService.BROADCAST_INTENT_STRING_EXTRA,
+                            TimerService.ACTION_TIMER_RESUME
+                        )
+                    }
+                )
+            else
+                requireActivity().sendBroadcast(
+                    Intent(TimerService.ACTION_NOTIFICATION_BUTTON).apply {
+                        putExtra(
+                            TimerService.BROADCAST_INTENT_STRING_EXTRA,
+                            TimerService.ACTION_TIMER_PAUSE
+                        )
+                    }
+                )
+        }
+
+        binding.ivBtnReset.setOnClickListener {
+            requireActivity().sendBroadcast(
+                Intent(TimerService.ACTION_NOTIFICATION_BUTTON).apply {
+                    putExtra(
+                        TimerService.BROADCAST_INTENT_STRING_EXTRA,
+                        TimerService.ACTION_TIMER_STOP
+                    )
+                }
             )
         }
 
@@ -104,6 +132,10 @@ class TimerFragment : Fragment() {
                 //timerService.isTimerStopped.removeObservers(viewLifecycleOwner)
                 unbindAndGoHome()
             }
+        }
+
+        timerService.millis.observe(viewLifecycleOwner) {
+            binding.progressBar.progress = it.toInt()
         }
     }
 
