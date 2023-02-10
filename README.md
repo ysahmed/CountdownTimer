@@ -22,10 +22,13 @@ TODO
 - [x] ~~Alarm~~
 - [x] ~~Notifications~~
 - [x] ~~Custom progressbar~~
+- [x] ~~Saving presets~~
+- [ ] Ringtone picker
 - [ ] API 33 support
-- [ ] Saving presets
-- [ ] Creating string resources
+- [ ] Remove hardcoded strings
 - [ ] Code Cleanup 
+
+
 Special thanks
 ---
 [ShawnLin013](https://github.com/ShawnLin013) for the customizable NumberPicker. 

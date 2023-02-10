@@ -78,6 +78,39 @@ class TimerFragment : Fragment() {
             )
         }
 
+        setOnClickListener()
+
+    }
+
+    private fun initiateObservers() {
+        timerService.formattedTimeInFuture.observe(viewLifecycleOwner) { formattedTimeInFuture ->
+            binding.tvTimer.text = formattedTimeInFuture
+            //Log.i(TAG, "initiateObservers: $formattedTimeInFuture")
+        }
+
+        timerService.ifTimerIsPaused.observe(viewLifecycleOwner) { ifTimerIsPaused ->
+            if (ifTimerIsPaused) {
+                binding.ivBtnPauseResume.setImageResource(R.drawable.btn_play)
+            } else {
+                binding.ivBtnPauseResume.setImageResource(R.drawable.btn_pause)
+            }
+        }
+
+        timerService.isTimerStopped.observe(viewLifecycleOwner) { isTimerStopped ->
+            if (isTimerStopped) {
+                //Log.i(TAG, "initiateObservers: $isTimerStopped")
+                //timerService.isTimerStopped.removeObservers(viewLifecycleOwner)
+                unbindAndGoHome()
+            }
+        }
+
+        timerService.millis.observe(viewLifecycleOwner) {
+            binding.progressBar.progress = it.toInt()
+        }
+    }
+
+    private fun setOnClickListener() {
+
         binding.ivBtnPauseResume.setOnClickListener {
             if (timerService.ifTimerIsPaused.value!!)
                 requireActivity().sendBroadcast(
@@ -108,34 +141,6 @@ class TimerFragment : Fragment() {
                     )
                 }
             )
-        }
-
-    }
-
-    private fun initiateObservers() {
-        timerService.formattedTimeInFuture.observe(viewLifecycleOwner) { formattedTimeInFuture ->
-            binding.tvTimer.text = formattedTimeInFuture
-            //Log.i(TAG, "initiateObservers: $formattedTimeInFuture")
-        }
-
-        timerService.ifTimerIsPaused.observe(viewLifecycleOwner) { ifTimerIsPaused ->
-            if (ifTimerIsPaused) {
-                binding.ivBtnPauseResume.setImageResource(R.drawable.btn_play)
-            } else {
-                binding.ivBtnPauseResume.setImageResource(R.drawable.btn_pause)
-            }
-        }
-
-        timerService.isTimerStopped.observe(viewLifecycleOwner) { isTimerStopped ->
-            if (isTimerStopped) {
-                //Log.i(TAG, "initiateObservers: $isTimerStopped")
-                //timerService.isTimerStopped.removeObservers(viewLifecycleOwner)
-                unbindAndGoHome()
-            }
-        }
-
-        timerService.millis.observe(viewLifecycleOwner) {
-            binding.progressBar.progress = it.toInt()
         }
     }
 

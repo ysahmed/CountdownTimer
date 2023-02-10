@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    tools:context=".view.fragment.SaveEditDialogFragment">
+
+    <ImageView
+        android:id="@+id/btn_done"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
+        android:clickable="true"
+        android:contentDescription="TODO"
+        android:focusable="true"
+        android:minHeight="48dp"
+        android:paddingVertical="10dp"
+        android:src="@drawable/ic_ok"
+        app:layout_constraintBottom_toBottomOf="@+id/btn_close"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/btn_close"
+        app:layout_constraintTop_toTopOf="@+id/btn_close" />
+
+    <ImageView
+        android:id="@+id/btn_close"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="32dp"
+        android:clickable="true"
+        android:contentDescription="TODO"
+        android:focusable="true"
+        android:minHeight="48dp"
+        android:paddingVertical="10dp"
+        android:src="@drawable/ic_close"
+        app:layout_constraintEnd_toStartOf="@+id/btn_done"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintHorizontal_chainStyle="spread"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+
+    <com.shawnlin.numberpicker.NumberPicker
+        android:id="@+id/hour_picker"
+        style="@style/number_picker_style_small"
+        android:contentDescription="Hour"
+        app:layout_constraintEnd_toStartOf="@+id/textView"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintHorizontal_chainStyle="packed"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btn_close"
+        app:np_max="24" />
+
+    <TextView
+        android:id="@+id/textView"
+        style="@style/separator_style_small"
+        android:text=":"
+        app:layout_constraintBottom_toBottomOf="@+id/hour_picker"
+        app:layout_constraintEnd_toStartOf="@+id/minute_picker"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/hour_picker"
+        app:layout_constraintTop_toTopOf="@+id/hour_picker" />
+
+    <com.shawnlin.numberpicker.NumberPicker
+        android:id="@+id/minute_picker"
+        style="@style/number_picker_style_small"
+        android:contentDescription="Minute"
+        app:layout_constraintEnd_toStartOf="@+id/textView2"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/textView"
+        app:layout_constraintTop_toBottomOf="@+id/btn_close"
+        app:np_max="59" />
+
+    <TextView
+        android:id="@+id/textView2"
+        style="@style/separator_style_small"
+        android:text=":"
+        app:layout_constraintBottom_toBottomOf="@+id/second_picker"
+        app:layout_constraintEnd_toStartOf="@+id/second_picker"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/minute_picker"
+        app:layout_constraintTop_toTopOf="@+id/second_picker" />
+
+
+    <com.shawnlin.numberpicker.NumberPicker
+        android:id="@+id/second_picker"
+        style="@style/number_picker_style_small"
+        android:contentDescription="Second"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/textView2"
+        app:layout_constraintTop_toBottomOf="@+id/btn_close"
+        app:np_max="59" />
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/inner_cv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:cardCornerRadius="15dp"
+        android:layout_margin="12dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/minute_picker">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/inner_cl"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <EditText
+                android:id="@+id/et_preset_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="16dp"
+                android:layout_marginVertical="16dp"
+                android:autofillHints="preset name"
+                android:hint="Name"
+                android:inputType="text"
+                android:minHeight="48dp"
+                app:layout_constraintBottom_toTopOf="@+id/tv_title_ringtone"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/tv_title_ringtone"
+                style="@style/TextAppearance.AppCompat.Title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:text="Ringtone"
+                app:layout_constraintBottom_toTopOf="@+id/tv_subtitle_ringtone_ame"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/et_preset_name" />
+
+            <TextView
+                android:id="@+id/tv_subtitle_ringtone_ame"
+                style="@style/TextAppearance.AppCompat.Body1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginBottom="16dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tv_title_ringtone"
+                tools:text="Default" />
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:src="@drawable/ic_arrow"
+                android:layout_marginEnd="12dp"
+                app:layout_constraintBottom_toBottomOf="@+id/tv_subtitle_ringtone_ame"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/tv_title_ringtone" />
+
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+    </androidx.cardview.widget.CardView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

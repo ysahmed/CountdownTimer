@@ -31,6 +31,8 @@ public final class PresetDao_Impl implements PresetDao {
 
   private final EntityDeletionOrUpdateAdapter<TimerPreset> __deletionAdapterOfTimerPreset;
 
+  private final EntityDeletionOrUpdateAdapter<TimerPreset> __updateAdapterOfTimerPreset;
+
   public PresetDao_Impl(RoomDatabase __db) {
     this.__db = __db;
     this.__insertionAdapterOfTimerPreset = new EntityInsertionAdapter<TimerPreset>(__db) {
@@ -71,6 +73,34 @@ public final class PresetDao_Impl implements PresetDao {
         stmt.bindLong(1, value.getId());
       }
     };
+    this.__updateAdapterOfTimerPreset = new EntityDeletionOrUpdateAdapter<TimerPreset>(__db) {
+      @Override
+      public String createQuery() {
+        return "UPDATE OR ABORT `preset` SET `name` = ?,`duration` = ?,`ringTone_name` = ?,`ringtone_uri` = ?,`id` = ? WHERE `id` = ?";
+      }
+
+      @Override
+      public void bind(SupportSQLiteStatement stmt, TimerPreset value) {
+        if (value.getName() == null) {
+          stmt.bindNull(1);
+        } else {
+          stmt.bindString(1, value.getName());
+        }
+        stmt.bindLong(2, value.getDuration());
+        if (value.getRingTone_name() == null) {
+          stmt.bindNull(3);
+        } else {
+          stmt.bindString(3, value.getRingTone_name());
+        }
+        if (value.getRingtone_uri() == null) {
+          stmt.bindNull(4);
+        } else {
+          stmt.bindString(4, value.getRingtone_uri());
+        }
+        stmt.bindLong(5, value.getId());
+        stmt.bindLong(6, value.getId());
+      }
+    };
   }
 
   @Override
@@ -100,6 +130,23 @@ public final class PresetDao_Impl implements PresetDao {
         __db.beginTransaction();
         try {
           __deletionAdapterOfTimerPreset.handleMultiple(presetList);
+          __db.setTransactionSuccessful();
+          return Unit.INSTANCE;
+        } finally {
+          __db.endTransaction();
+        }
+      }
+    }, continuation);
+  }
+
+  @Override
+  public Object update(final TimerPreset preset, final Continuation<? super Unit> continuation) {
+    return CoroutinesRoom.execute(__db, true, new Callable<Unit>() {
+      @Override
+      public Unit call() throws Exception {
+        __db.beginTransaction();
+        try {
+          __updateAdapterOfTimerPreset.handle(preset);
           __db.setTransactionSuccessful();
           return Unit.INSTANCE;
         } finally {

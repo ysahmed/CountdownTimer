@@ -30,15 +30,40 @@
 
     </style>
 
-    <style name="cardView_style">
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_margin">8dp</item>
+    <style name="number_picker_style_small" parent="number_picker_style">
+
+        <item name="android:layout_width">50dp</item>
+        <item name="android:layout_height">150dp</item>
+
+        <item name="np_min">0</item>
+        <item name="np_textColor">?attr/colorOnPrimary</item>
+        <item name="np_selectedTextColor">?attr/colorOnPrimary</item>
+        <item name="np_textSize">30sp</item>
+        <item name="np_selectedTextSize">30sp</item>
+
+        <item name="np_dividerThickness">0dp</item>
+        <item name="np_dividerLength">0dp</item>
+        <item name="np_accessibilityDescriptionEnabled">false</item>
+        <item name="np_fadingEdgeEnabled">true</item>
+        <item name="np_fadingEdgeStrength">1.0</item>
+        <item name="np_formatter">%02d</item>
+
+
+        <item name="android:layout_marginTop">16dp</item>
     </style>
 
     <style name="separator_style">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:textSize">45sp</item>
+        <item name="android:paddingBottom">8dp</item>
+        <item name="android:gravity">center_vertical</item>
+    </style>
+
+    <style name="separator_style_small" parent="separator_style">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textSize">25sp</item>
         <item name="android:paddingBottom">8dp</item>
         <item name="android:gravity">center_vertical</item>
     </style>

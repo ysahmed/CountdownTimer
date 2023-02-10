@@ -31,7 +31,7 @@ class TimerService : Service() {
     }
 
     private lateinit var duration: String
-    private var isTimerRunning = false
+    //private var isTimerRunning = false
     //val isTimerActive: Boolean get() = isTimerRunning
 
     private var _isTimerStopped = MutableLiveData<Boolean>()
@@ -140,7 +140,7 @@ class TimerService : Service() {
 
     private fun startTimer() {
         _isTimerStopped.postValue(false)
-        isTimerRunning = true
+        //isTimerRunning = true
 
         // set alarm
         (getSystemService(ALARM_SERVICE) as AlarmManager).setExactAndAllowWhileIdle(
@@ -168,7 +168,7 @@ class TimerService : Service() {
             }
 
             override fun onFinish() {
-                isTimerRunning = false
+                //isTimerRunning = false
                 _isTimerStopped.postValue(true)
             }
         }.start()
@@ -196,7 +196,7 @@ class TimerService : Service() {
         _isTimerStopped.postValue(true)
         countDownTimer?.cancel()
         isTimerPaused.postValue(false)
-        isTimerRunning = false
+        //isTimerRunning = false
 
         // cancel alarm
         (getSystemService(ALARM_SERVICE) as AlarmManager).cancel(

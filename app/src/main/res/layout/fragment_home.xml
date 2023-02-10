@@ -67,34 +67,33 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="32dp"
+        android:layout_marginTop="8dp"
         android:text="Presets"
         android:textColor="?attr/colorPrimaryVariant"
         android:textSize="@dimen/small_btn_text_size"
-        app:layout_constraintBottom_toBottomOf="@+id/tv_add"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/tv_add"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintTop_toBottomOf="@+id/minute_picker" />
 
     <TextView
         android:id="@+id/tv_add"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
         android:layout_marginEnd="32dp"
         android:text="@string/tv_btn_add_text"
         android:textSize="@dimen/small_btn_text_size"
+        app:layout_constraintBottom_toBottomOf="@+id/tv_timer"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/minute_picker" />
+        app:layout_constraintTop_toTopOf="@+id/tv_timer" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_presets"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_margin="8dp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/guideline"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_add"
+        app:layout_constraintTop_toBottomOf="@+id/tv_timer"
         tools:listitem="@layout/preset_item" />
 
     <ImageView
@@ -106,5 +105,38 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
+    <ImageButton
+        android:id="@+id/btn_edit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/btn_tools_bg"
+        android:minWidth="48dp"
+        android:minHeight="48dp"
+        android:src="@drawable/ic_edit"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@+id/btn_delete"
+        app:layout_constraintEnd_toStartOf="@+id/btn_delete"
+        app:layout_constraintTop_toTopOf="@+id/btn_delete" />
+
+    <ImageButton
+        android:id="@+id/btn_delete"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="32dp"
+        android:background="@drawable/btn_tools_bg"
+        android:minWidth="48dp"
+        android:minHeight="48dp"
+        android:src="@drawable/ic_delete"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@+id/tv_timer"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/tv_timer" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_end="47dp" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
