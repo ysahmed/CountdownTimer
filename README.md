@@ -2,8 +2,8 @@ About
 ---
 Just a simple countdown timer app. __\[WORK IN PROGRESS\]__
 
-This project is built by following MVVM architecture.  
-The purpose of this project experiment with the following Android and Jetpack components:
+This project is built by following MVVM architecture guideline.  
+The purpose of this project is to experiment with the following Android and Jetpack components:
 
 - Service
 - AlarmManager
@@ -23,7 +23,7 @@ TODO
 - [x] ~~Notifications~~
 - [x] ~~Custom progressbar~~
 - [x] ~~Saving presets~~
-- [ ] Ringtone picker
+- [x] ~~Alarm-tone picker~~
 - [ ] API 33 support
 - [ ] Remove hardcoded strings
 - [ ] Code Cleanup 

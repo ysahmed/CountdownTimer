@@ -52,7 +52,7 @@ class PresetAdapter(private val itemClickListener: AdapterItemClickListener) :
         holder.item.setOnClickListener {
 
             if (!_selectionMode.value!!)
-                itemClickListener.setPickerFromPreset(currentItem.duration)
+                itemClickListener.setTimer(currentItem.duration, currentItem.ringtone_uri)
             else {
                 if (holder.checked.visibility == View.INVISIBLE) {
                     holder.checked.visibility = View.VISIBLE
@@ -80,7 +80,7 @@ class PresetAdapter(private val itemClickListener: AdapterItemClickListener) :
 }
 
 interface AdapterItemClickListener {
-    fun setPickerFromPreset(duration: Long)
+    fun setTimer(duration: Long, ringtoneUri: String)
 
     fun addSelection(preset: TimerPreset, position: Int)
     fun removeSelection(preset: TimerPreset, position: Int)

@@ -20,6 +20,7 @@ import com.waesh.timer.application.TimerApplication
 import com.waesh.timer.databinding.FragmentHomeBinding
 import com.waesh.timer.model.entity.TimerPreset
 import com.waesh.timer.service.TimerService
+import com.waesh.timer.util.Constants
 import com.waesh.timer.util.PrefKey
 import com.waesh.timer.view.adapter.AdapterItemClickListener
 import com.waesh.timer.view.adapter.PresetAdapter
@@ -37,14 +38,17 @@ class HomeFragment : Fragment(), MenuProvider {
     private var mainMenu: Menu? = null
 
     private var selectionAdapterPositions = mutableListOf<Int>()
+    private var ringtoneUri = Constants.DEFAULT_TONE_URI_STRING
 
     private val viewModel by activityViewModels<HomeViewModel> {
         HomeViewModelFactory((requireActivity().application as TimerApplication).repository)
     }
 
+    // Adapter initialization
     private val adapter = PresetAdapter(object : AdapterItemClickListener {
-        override fun setPickerFromPreset(duration: Long) {
+        override fun setTimer(duration: Long, ringtoneUri: String) {
             this@HomeFragment.setPicker(duration)
+            this@HomeFragment.ringtoneUri = ringtoneUri
         }
 
         override fun addSelection(preset: TimerPreset, position: Int) {
@@ -106,8 +110,9 @@ class HomeFragment : Fragment(), MenuProvider {
                             .findViewById<ImageView>(R.id.iv_check)
                             .visibility = View.INVISIBLE
                     }
-
                 }
+                // empty selectionAdapterPositions
+                selectionAdapterPositions = mutableListOf()
                 // hide edit delete buttons
                 hideMenu()
                 // show start button
@@ -127,6 +132,7 @@ class HomeFragment : Fragment(), MenuProvider {
 
 
     private fun setOnClickListener() {
+        // start timer
         binding.ivStart.setOnClickListener {
 
             lifecycleScope.launch {
@@ -142,12 +148,14 @@ class HomeFragment : Fragment(), MenuProvider {
 
                 findNavController().navigate(
                     HomeFragmentDirections.actionHomeFragmentToTimerFragment(
-                        getTimeMillisFromPickers()
+                        getTimeMillisFromPickers(),
+                        ringtoneUri
                     )
                 )
             }
         }
 
+        // new preset
         binding.tvAdd.setOnClickListener {
             SaveEditDialogFragment().apply {
                 val bundle = Bundle().apply {

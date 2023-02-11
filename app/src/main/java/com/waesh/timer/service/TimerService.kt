@@ -8,6 +8,7 @@ import android.content.IntentFilter
 import android.media.AudioAttributes
 import android.media.Ringtone
 import android.media.RingtoneManager
+import android.net.Uri
 import android.os.Binder
 import android.os.CountDownTimer
 import android.os.IBinder
@@ -22,13 +23,13 @@ class TimerService : Service() {
 
     private val _millis = MutableLiveData<Long>()
     val millis: LiveData<Long>
-    get() = _millis
+        get() = _millis
 
     private var millisInFuture = 0L
-    set(value) {
-        _millis.postValue(value)
-        field = value
-    }
+        set(value) {
+            _millis.postValue(value)
+            field = value
+        }
 
     private lateinit var duration: String
     //private var isTimerRunning = false
@@ -62,12 +63,6 @@ class TimerService : Service() {
 
     override fun onCreate() {
         super.onCreate()
-        ringtone = RingtoneManager.getRingtone(this, RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM))
-        ringtone.audioAttributes = AudioAttributes.Builder()
-            .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
-            .setUsage(AudioAttributes.USAGE_ALARM)
-            .build()
-        
         notificationActionReceiver = object : BroadcastReceiver() {
             override fun onReceive(context: Context?, intent: Intent?) {
                 if (intent?.hasExtra(BROADCAST_INTENT_STRING_EXTRA) == true) {
@@ -126,8 +121,24 @@ class TimerService : Service() {
             millisInFuture = intent.getLongExtra(MILLIS_IN_FUTURE, 0L)
             duration = UtilMethods.getFormattedDuration(millisInFuture)
             _formattedTimeInFuture.postValue(duration)
-            Log.i(TAG, "onBind: millisInFuture = $millisInFuture")
         }
+
+        if (intent.hasExtra(RINGTONE_URI)) {
+            ringtone = RingtoneManager.getRingtone(
+                this,
+                Uri.parse(
+                    intent.getStringExtra(
+                        RINGTONE_URI
+                    )
+                )
+            )
+        }
+
+        ringtone.audioAttributes = AudioAttributes.Builder()
+            .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
+            .setUsage(AudioAttributes.USAGE_ALARM)
+            .build()
+
         startForeground(
             TIMER_COUNTDOWN_NOTIFICATION_ID,
             notificationModule.getNotificationBase(running = true, complete = false)
@@ -263,6 +274,7 @@ class TimerService : Service() {
     companion object {
         const val TAG = "TIMER_SERVICE"
         const val MILLIS_IN_FUTURE = "MILLIS_IN_FUTURE"
+        const val RINGTONE_URI = "RINGTONE_URI"
         const val ACTION_NOTIFICATION_BUTTON = "com.waesh.timer.NOTIFICATION_ACTION"
         const val ACTION_ALARM = "com.waesh.timer.ACTION_ALARM"
         const val BROADCAST_INTENT_STRING_EXTRA = "BROADCAST_INTENT_STRING_EXTRA"

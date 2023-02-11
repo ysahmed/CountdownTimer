@@ -34,5 +34,9 @@
             android:name="timeInMillis"
             app:argType="long"
             android:defaultValue="0L" />
+        <argument
+            android:name="ringtoneUri"
+            app:argType="string"
+            android:defaultValue='"content://settings/system/alarm_alert"' />
     </fragment>
 </navigation>

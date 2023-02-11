@@ -60,16 +60,17 @@ class TimerFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         val args: TimerFragmentArgs by navArgs()
-        Log.i(TAG, "onViewCreated: ${args.timeInMillis}")
+
         binding.progressBar.max = args.timeInMillis.toInt()
 
-        //if (!(activity as MainActivity).isTimerServiceRunning(TimerService::class.java)) {
+        // start service. also send duration and ringtone uri
         requireActivity().startForegroundService(
             Intent(requireActivity(), TimerService::class.java).apply {
                 putExtra(TimerService.MILLIS_IN_FUTURE, args.timeInMillis)
+                putExtra(TimerService.RINGTONE_URI, args.ringtoneUri)
             }
         )
-        //}
+
 
         // then bind to the service anyway
         Intent(requireActivity(), TimerService::class.java).let {

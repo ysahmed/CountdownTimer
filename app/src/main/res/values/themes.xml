@@ -19,5 +19,6 @@
         <item name="backgroundColor">?attr/colorPrimary</item>
         <item name="android:textColor">?attr/colorOnPrimary</item>
         <item name="android:windowNoTitle">true</item>
+        <item name="bottomSheetDialogTheme">@style/bottom_sheet_style</item>
     </style>
 </resources>
