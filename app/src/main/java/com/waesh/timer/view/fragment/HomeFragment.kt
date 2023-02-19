@@ -207,7 +207,6 @@ class HomeFragment : Fragment(), MenuProvider {
             }
             R.id.action_cancel -> {
                 adapter.cancelSelectionMode()
-                selectionAdapterPositions = mutableListOf()
                 true
             }
             else -> false
