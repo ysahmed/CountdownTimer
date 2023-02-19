@@ -144,11 +144,14 @@ class NotificationModule(private val context: Context) {
                 description = "Alerts when timer ends"
             }
 
-            (context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager)
+/*            (context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager)
                 .createNotificationChannel(countdownNotificationChannel)
 
             (context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager)
-                .createNotificationChannel(alarmNotificationChannel)
+                .createNotificationChannel(alarmNotificationChannel)*/
+
+            (context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager)
+                .createNotificationChannels(listOf(countdownNotificationChannel, alarmNotificationChannel))
 
         }
     }
